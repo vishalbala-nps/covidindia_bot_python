@@ -1,5 +1,6 @@
 from flask import *
 import dialogflow_handler
+import requests
 #Functions
 def on_launch():
     rhandler = dialogflow_handler.response_handler()
@@ -10,8 +11,9 @@ def on_fallback():
     rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
     return rhandler.formResponse()
 def get_nationwide():
+    data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("Here are the current statistics")
+    rhandler.genericResponse("As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
