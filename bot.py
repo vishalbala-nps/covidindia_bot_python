@@ -10,7 +10,7 @@ def handler():
     intent = ihandler.get_intent()
     params = ihandler.get_params()
     if intent == "welcome_intent":
-        rhandler = dialogflow_handler.response_handler("Hello World!")
+        rhandler = dialogflow_handler.response_handler("Hello! Welcome to Covidstate India! What can I do for you?")
         fres = rhandler.formResponse()
     elif intent == "fallback_intent":
         rhandler = dialogflow_handler.response_handler("Sorry, I did not get that! Could you repeat it?")
