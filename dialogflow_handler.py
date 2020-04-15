@@ -7,7 +7,7 @@ class intent_handler():
         return self.resjson["queryResult"]["parameters"]
 
 class response_handler():
-    def __init__(self,text):
+    def genericResponse(self,text):
         self.ftext = text
     def formResponse(self):
         return {"fulfillmentText":self.ftext}
