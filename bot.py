@@ -12,6 +12,9 @@ def handler():
     if intent == "welcome_intent":
         rhandler = dialogflow_handler.response_handler("Hello World!")
         fres = rhandler.formResponse()
+    elif intent == "fallback_intent":
+        rhandler = dialogflow_handler.response_handler("Sorry, I did not get that! Could you repeat it?")
+        fres = rhandler.formResponse()
     return jsonify(fres)
 
 if __name__ == "__main__":
