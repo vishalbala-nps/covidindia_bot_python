@@ -7,12 +7,16 @@ class intent_handler():
         return self.resjson["queryResult"]["parameters"]
 
 class response_handler():
+    def __init__(self):
+        self.gcardbtnlist = []
     def genericResponse(self,text):
         self.ftext = text
     def googleAssistantCard(self,title,subtitle,text):
-        self.cardtitle = title
-        self.cardsubtitle = subtitle
-        self.cardspeech = text
+        self.gcardtitle = title
+        self.gcardsubtitle = subtitle
+        self.gcardspeech = text
+    def googleAssistantCardNewButton(self,btntitle,btnlink):
+        self.gcardbtnlist.append({"title":btntitle,"openUrlAction":{"url":btnlink}})
     def formResponse(self):
         import json
         ijson = []
@@ -21,8 +25,11 @@ class response_handler():
         except:
             raise AttributeError("genericResponse is required")
         try:
-            ijson.append({"simpleResponse":{"textToSpeech":self.cardspeech}})
-            ijson.append({"basicCard":{"title":self.cardtitle,"formatted_text":self.cardsubtitle}})
+            ijson.append({"simpleResponse":{"textToSpeech":self.gcardspeech}})
+            if self.gcardbtnlist == []:
+                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardsubtitle}})
+            else:
+                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardsubtitle,"buttons":self.gcardbtnlist}})
         except:
             pass
         if ijson != []:
