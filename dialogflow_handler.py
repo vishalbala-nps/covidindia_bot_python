@@ -14,8 +14,10 @@ class response_handler():
         self.telparsemode = parse_mode
     def formResponse(self):
         self.payloadjson = {}
+        self.fulfiljson = {}
+        self.fulfiljson["fulfillmentMessages"] = []
         try:
-            self.fulfiljson = {"fulfillmentText":self.ftext}
+            self.fulfiljson["fulfillmentMessages"].append({"text":{"text":[self.ftext]}})
         except:
             raise AttributeError("genericResponse is required")
         try:
@@ -23,7 +25,5 @@ class response_handler():
         except:
             pass
         if self.payloadjson != {}:
-            self.fulfiljson["fulfillmentMessages"] = []
             self.fulfiljson["fulfillmentMessages"].append({"payload":self.payloadjson})
-            self.fulfiljson["fulfillmentMessages"].append({"text":{"text":["abc"]}})
         return self.fulfiljson
