@@ -28,8 +28,9 @@ def get_statewise(p):
     if state == None:
         rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
     data = requests.get("http://covidstate.in/api/v1/data?state="+state+"&type=latest")
+    djson = data.json()
     if data.status_code == 200:
-        rhandler.genericResponse("Got data")
+        rhandler.genericResponse("As of "+djson["timestamp"]["updated_time"]+", there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?")
     else:
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
