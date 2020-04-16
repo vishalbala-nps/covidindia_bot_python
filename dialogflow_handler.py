@@ -22,7 +22,7 @@ class response_handler():
             raise AttributeError("genericResponse is required")
         try:
             ijson.append({"simpleResponse":{"textToSpeech":self.cardspeech}})
-            ijson.append({"basicCard":{"title":self.cardtitle,"subtitle":self.cardsubtitle}})
+            ijson.append({"basicCard":{"title":self.cardtitle,"formatted_text":self.cardsubtitle}})
         except:
             pass
         if ijson != []:
