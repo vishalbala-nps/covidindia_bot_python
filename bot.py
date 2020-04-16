@@ -39,6 +39,7 @@ def get_nationwide_contacts():
     rhandler = dialogflow_handler.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     rhandler.genericResponse("I got the data")
+    rhandler.googleAssistantCard("Hi","Hi","Hi")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)

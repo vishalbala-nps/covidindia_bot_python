@@ -9,9 +9,22 @@ class intent_handler():
 class response_handler():
     def genericResponse(self,text):
         self.ftext = text
+    def googleAssistantCard(self,title,subtitle,text):
+        self.cardtitle = title
+        self.cardsubtitle = subtitle
+        self.cardspeech = text
     def formResponse(self):
+        import json
+        ijson = []
         try:
-            fulfiljson = {"fulfillmentText":self.ftext}
+            self.fulfiljson = {"fulfillmentText":self.ftext}
         except:
             raise AttributeError("genericResponse is required")
-        return fulfiljson
+        try:
+            ijson.append({"simpleResponse":{"textToSpeech":self.cardspeech}})
+            ijson.append({"basicCard":{"title":self.cardtitle,"subtitle":self.cardsubtitle}})
+        except:
+            pass
+        if ijson != []:
+            self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}}
+        return json.dumps(self.fulfiljson)
