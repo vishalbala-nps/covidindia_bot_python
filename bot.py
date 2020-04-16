@@ -40,7 +40,7 @@ def get_nationwide_contacts():
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     rhandler.genericResponse("I got the data")
     rhandler.googleAssistantCard("Nationwide Contacts","L1  \nL2  \nL3","Here are the Nationwide contacts")
-    rhandler.googleAssistantCardNewButton("Abc","google.com")
+    rhandler.googleAssistantCardNewButton("Abc","http://google.com")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
