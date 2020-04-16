@@ -35,6 +35,11 @@ def get_statewise(p):
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
 
+def get_nationwide_contacts():
+    rhandler = dialogflow_handler.response_handler()
+    data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
+    rhandler.genericResponse("I got the data")
+    return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
 
@@ -52,6 +57,8 @@ def handler():
         fres = get_nationwide()
     elif intent == "get_statewise":
         fres = get_statewise(params)
+    elif intent == "nationwide_contacts":
+        fres = get_nationwide_contacts()
     else:
         fres = on_fallback()
     return jsonify(fres)
