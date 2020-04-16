@@ -31,7 +31,6 @@ def get_statewise(p):
     djson = data.json()
     if data.status_code == 200:
         rhandler.genericResponse("As of "+djson["timestamp"]["updated_time"]+", there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?")
-        rhandler.telegramResponse("You can read about *entities* [here](/docs/concept-entities).","Markdown")
     else:
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
