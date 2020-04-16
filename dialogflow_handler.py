@@ -10,4 +10,8 @@ class response_handler():
     def genericResponse(self,text):
         self.ftext = text
     def formResponse(self):
-        return {"fulfillmentText":self.ftext}
+        try:
+            fulfiljson = {"fulfillmentText":self.ftext}
+        except:
+            raise AttributeError("genericResponse is required")
+        return fulfiljson

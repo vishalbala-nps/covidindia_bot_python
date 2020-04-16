@@ -15,6 +15,10 @@ def get_nationwide():
     rhandler = dialogflow_handler.response_handler()
     rhandler.genericResponse("As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?")
     return rhandler.formResponse()
+def get_statewise(p):
+    rhandler = dialogflow_handler.response_handler()
+    rhandler.genericResponse("The state is "+p["geo-state"])
+    return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
 
@@ -30,6 +34,8 @@ def handler():
         fres = on_fallback()
     elif intent == "get_nationwide":
         fres = get_nationwide()
+    elif intent == "get_statewise":
+        fres = get_statewise(params)
     else:
         fres = on_fallback()
     return jsonify(fres)
