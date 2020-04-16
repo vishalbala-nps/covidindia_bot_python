@@ -15,12 +15,12 @@ class response_handler():
     def formResponse(self):
         self.payloadjson = {}
         try:
-            self.fulfiljson = {"fulfillmentText":self.ftext}
+            self.fulfiljson = {"fulfillmentText":self.ftext,"fulfillmentMessages":[]}
         except:
             raise AttributeError("genericResponse is required")
         try:
             self.payloadjson["telegram"] = {"text":self.teltext,"parse_mode":self.telparsemode}
         except:
             pass
-        self.fulfiljson["payload"] = self.payloadjson
+        self.fulfiljson["fulfillmentMessages"].append({"payload":self.payloadjson})
         return self.fulfiljson
