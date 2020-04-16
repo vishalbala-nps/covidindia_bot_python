@@ -12,16 +12,20 @@ class response_handler():
     def telegramResponse(self,text,parse_mode):
         self.teltext = text
         self.telparsemode = parse_mode
+    def googleResponse(self,text,expect_response):
+        self.googletext = text
+        self.expect_response = expect_response
     def formResponse(self):
         self.payloadjson = {}
         self.fulfiljson = {}
         self.fulfiljson["fulfillmentMessages"] = []
-        try:
-            self.fulfiljson["fulfillmentMessages"].append({"text":{"text":[self.ftext]}})
-        except:
-            raise AttributeError("genericResponse is required")
+        self.fulfiljson["fulfillmentMessages"].append({"text":{"text":[self.ftext]}})
         try:
             self.payloadjson["telegram"] = {"text":self.teltext,"parse_mode":self.telparsemode}
+        except:
+            pass
+        try:
+            self.payloadjson["google"] = {"expectUserResponse":self.expect_response,"richResponse": {"items": [{ "simpleResponse":{"textToSpeech":self.googletext}]}}
         except:
             pass
         if self.payloadjson != {}:
