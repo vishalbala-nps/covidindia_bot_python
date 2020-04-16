@@ -25,4 +25,5 @@ class response_handler():
         if self.payloadjson != {}:
             self.fulfiljson["fulfillmentMessages"] = []
             self.fulfiljson["fulfillmentMessages"].append({"payload":self.payloadjson})
+            self.fulfiljson["fulfillmentMessages"].append({"text":["abc"]})
         return self.fulfiljson
