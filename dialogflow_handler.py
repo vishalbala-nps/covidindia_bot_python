@@ -9,9 +9,18 @@ class intent_handler():
 class response_handler():
     def genericResponse(self,text):
         self.ftext = text
+    def telegramResponse(self,text,parse_mode):
+        self.teltext = text
+        self.telparsemode = parse_mode
     def formResponse(self):
+        self.payloadjson = {}
         try:
-            fulfiljson = {"fulfillmentText":self.ftext}
+            self.fulfiljson = {"fulfillmentText":self.ftext}
         except:
             raise AttributeError("genericResponse is required")
-        return fulfiljson
+        try:
+            self.payloadjson["telegram"] = {"text":self.teltext,"parse_mode":self.telparsemode}
+        except:
+            pass
+        self.fulfiljson["payload"] = self.payloadjson
+        return self.fulfiljson
