@@ -27,4 +27,4 @@ class response_handler():
             pass
         if ijson != []:
             self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}}
-        return json.dumps(self.fulfiljson)
+        return self.fulfiljson
