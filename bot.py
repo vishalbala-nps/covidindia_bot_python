@@ -20,14 +20,19 @@ def get_nationwide():
 
 def get_statewise(p):
     rhandler = dialogflow_handler.response_handler()
-    if p["geo-state"] == None:
-        rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
+    try:
+        state = p["geo-state"]
+    except:
+        rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
         return rhandler.formResponse()
-    data = requests.get("http://covidstate.in/api/v1/data?state="+p["geo-state"]+"&type=latest")
+    if state == None:
+        rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
+    data = requests.get("http://covidstate.in/api/v1/data?state="+state+"&type=latest")
     if data.status_code == 200:
-        return rhandler.genericResponse("Got data").formResponse()
+        rhandler.genericResponse("Got data")
     else:
-        return rhandler.genericResponse("Sorry, I could not find that state! Could you please repeat it?").formResponse()
+        rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
+    return rhandler.formResponse()
 
 #Program Starts here
 app = Flask(__name__)
