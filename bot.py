@@ -1,6 +1,7 @@
 from flask import *
 import dialogflow_handler
 import requests
+import phonenumbers
 #Functions
 def on_launch():
     rhandler = dialogflow_handler.response_handler()
@@ -38,10 +39,12 @@ def get_statewise(p):
 def get_nationwide_contacts(caps):
     rhandler = dialogflow_handler.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
-    gentext = "Here are the Nationwide contacts: The Helpline number is "+data["phone"]+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+data["whatsapp"]
+    formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    gentext = "Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+formattedwa
     rhandler.genericResponse(gentext)
     if "actions.capability.SCREEN_OUTPUT" in caps:
-        rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+data["phone"]+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+data["whatsapp"],"Here are the Nationwide contacts")
+        rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa,"Here are the Nationwide contacts")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
