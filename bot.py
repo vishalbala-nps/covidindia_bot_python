@@ -60,26 +60,48 @@ def get_statewise_contacts(caps,platform,params):
     watext = ""
     emailtext = ""
     webtext = ""
+    formattedphone = phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL
     if data["whatsapp"] != None:
-        if platform == "google":
-            watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"<say-as>,"
+        if "actions.capability.SCREEN_OUTPUT" in caps:
+            watext = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
         else:
-            watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
+            if platform == "google":
+                watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"<say-as>,"
+            else:
+                watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
     if data["email"] != None:
-        if platform == "google":
-            emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"<say-as>, "
+        if "actions.capability.SCREEN_OUTPUT" in caps:
+            emailtext = data["email"]
         else:
-            emailtext = "The Email is "+data["email"]+", "
+            if platform == "google":
+                emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"<say-as>, "
+            else:
+                emailtext = "The Email is "+data["email"]+", "
     if data["website"] != None:
-        if platform == "google":
-            webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"<say-as>, "
+        if "actions.capability.SCREEN_OUTPUT" in caps:
+            webtext = data["website"]
         else:
-            webtext = "The Website is "+data["website"]
+            if platform == "google":
+                webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"<say-as>, "
+            else:
+                webtext = "The Website is "+data["website"]
     if platform == "google":
-        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext+"</speak>"
+        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext+"</speak>"
     else:
         grestext = "Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext
     rhandler.genericResponse(grestext.rstrip(','))
+    if platform == "google" and "actions.capability.SCREEN_OUTPUT" in caps:
+        phcard = "📞 Phone: "+formattedphone
+        webcard = None
+        emailcard = None
+        wacard = None
+        if data["website"] != None:
+            webcard = "  \n🌏 Website: "+data["website"]
+        if data["email"] != None:
+            emailcard = "  \n📬 Email: "+data["email"]
+        if data["whatsapp"] != None:
+            wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
+        rhandler.googleAssistantCard(phcard+webcard+emailcard+wacard)
     return rhandler.formResponse()
     
 #Program Starts here
