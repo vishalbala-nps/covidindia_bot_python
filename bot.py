@@ -56,6 +56,7 @@ app = Flask(__name__)
 @app.route("/",methods=["POST"])
 def handler():
     fres = {}
+    print(request.get_json())
     ihandler = dialogflow_handler.intent_handler(request.get_json())
     intent = ihandler.get_intent()
     params = ihandler.get_params()
