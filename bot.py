@@ -42,9 +42,11 @@ def get_nationwide_contacts(caps):
     rhandler.genericResponse(gentext)
     print(caps)
     if "actions.capability.WEB_BROWSER" in caps:
-        rhandler.googleAssistantNewCarousel("Abc")
-        rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
-        rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
+        rhandler.googleAssistantNewCarousel("Here are the nationwide contacts")
+        rhandler.googleAssistantCarouselNewItem("Phone","tel:"+data["phone"],"","","","")
+        rhandler.googleAssistantCarouselNewItem("Email","mailto:"+data["email"],"","","","")
+        rhandler.googleAssistantCarouselNewItem("Website",data["website"],"","","","")
+        rhandler.googleAssistantCarouselNewItem("Whatsapp","http://wa.me/91"+data["whatsapp"],"","","","")
     print(rhandler.formResponse())
     return rhandler.formResponse()
 #Program Starts here
