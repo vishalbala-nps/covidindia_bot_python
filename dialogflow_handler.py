@@ -9,11 +9,14 @@ class intent_handler():
 class response_handler():
     def __init__(self):
         self.gcardbtnlist = []
+        self.cardbtnlist = []
     def genericResponse(self,text):
         self.ftext = text
     def genericCard(self,title,subtitle):
         self.cardtitle = title
         self.cardsubtitle = subtitle
+    def genericCardNewButton(self,btntitle,btnlink):
+        self.cardbtnlist.append({"text":btntitle,"postback":btnlink})
     def googleAssistantCard(self,title,subtitle,text):
         self.gcardtitle = title
         self.gcardftext = subtitle
@@ -35,7 +38,10 @@ class response_handler():
         except:
             pass
         try:
-            self.cardjson = {"title":self.cardtitle,"subtitle":self.cardsubtitle,"buttons":[{"text": "abc"}]}
+            if self.cardbtnlist != []:
+                self.cardjson = {"title":self.cardtitle,"subtitle":self.cardsubtitle,"buttons":self.cardbtnlist}
+            else:
+                self.cardjson = {"title":self.cardtitle,"subtitle":self.cardsubtitle}
             self.fulfiljson["fulfillmentMessages"] = []
             self.fulfiljson["fulfillmentMessages"].append({"card":self.cardjson})
         except:

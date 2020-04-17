@@ -42,6 +42,7 @@ def get_nationwide_contacts():
     rhandler.googleAssistantCard("Nationwide Contacts","L1  \nL2  \nL3","Here are the Nationwide contacts")
     rhandler.googleAssistantCardNewButton("Abc","http://google.com")
     rhandler.genericCard("Hi","hi")
+    rhandler.genericCardNewButton("Hi","http://google.com")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
