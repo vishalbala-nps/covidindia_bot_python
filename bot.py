@@ -38,11 +38,18 @@ def get_statewise(p):
 def get_nationwide_contacts():
     rhandler = dialogflow_handler.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
-    rhandler.genericResponse("I got the data")
-    rhandler.googleAssistantCard("Nationwide Contacts","L1  \nL2  \nL3","Here are the Nationwide contacts")
-    rhandler.googleAssistantCardNewButton("Abc","http://google.com")
-    rhandler.genericCard("Hi","hi")
-    rhandler.genericCardNewButton("Hi","http://google.com")
+    gentext = "Here are the Nationwide contacts: The Helpline number is "+data["phone"]+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+data["whatsapp"]
+    rhandler.genericResponse(gentext)
+    rhandler.googleAssistantCard("Nationwide Contacts","📞 Telephone: "+data["phone"]+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+data["whatsapp"],"Here are the Nationwide contacts")
+    rhandler.genericCard("Nationwide Contacts",gentext)
+    rhandler.googleAssistantCardNewButton("📞 Call National Helpline","tel:"+data["phone"])
+    rhandler.googleAssistantCardNewButton("📬 Send Email","mailto:"+data["email"])
+    rhandler.googleAssistantCardNewButton("🌏 Visit Website","tel:"+data["website"])
+    rhandler.googleAssistantCardNewButton("📱 Chat on Whatsapp","http://wa.me/91"+data["whatsapp"])
+    rhandler.genericCardNewButton("📞 Call National Helpline","tel:"+data["phone"])
+    rhandler.genericCardNewButton("📬 Send Email","mailto:"+data["email"])
+    rhandler.genericCardNewButton("🌏 Visit Website","tel:"+data["website"])
+    rhandler.genericCardNewButton("📱 Chat on Whatsapp","http://wa.me/91"+data["whatsapp"])
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
