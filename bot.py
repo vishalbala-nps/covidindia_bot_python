@@ -40,10 +40,12 @@ def get_nationwide_contacts(caps):
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     gentext = "Here are the Nationwide contacts: The Helpline number is "+data["phone"]+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+data["whatsapp"]
     rhandler.genericResponse(gentext)
+    print("actions.capability.WEB_BROWSER" in caps)
     if "actions.capability.WEB_BROWSER" in caps:
         rhandler.googleAssistantNewCarousel("Abc")
         rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
         rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
+    print(rhandler.formResponse())
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
