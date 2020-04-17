@@ -43,10 +43,10 @@ def get_nationwide_contacts(caps):
     print(caps)
     if "actions.capability.WEB_BROWSER" in caps:
         rhandler.googleAssistantNewCarousel("Here are the nationwide contacts")
-        rhandler.googleAssistantCarouselNewItem("Phone","tel:"+data["phone"],"","","","")
-        rhandler.googleAssistantCarouselNewItem("Email","mailto:"+data["email"],"","","","")
-        rhandler.googleAssistantCarouselNewItem("Website",data["website"],"","","","")
-        rhandler.googleAssistantCarouselNewItem("Whatsapp","http://wa.me/91"+data["whatsapp"],"","","","")
+        rhandler.googleAssistantCarouselNewItem("Phone","tel:"+data["phone"],"","","","Phone")
+        rhandler.googleAssistantCarouselNewItem("Email","mailto:"+data["email"],"","","","Email")
+        rhandler.googleAssistantCarouselNewItem("Website",data["website"],"","","","Website")
+        rhandler.googleAssistantCarouselNewItem("Whatsapp","http://wa.me/91"+data["whatsapp"],"","","","Whatsapp")
     print(rhandler.formResponse())
     return rhandler.formResponse()
 #Program Starts here
