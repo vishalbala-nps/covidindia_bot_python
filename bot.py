@@ -36,12 +36,15 @@ def get_statewise(p):
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
 
-def get_nationwide_contacts(caps):
+def get_nationwide_contacts(caps,platform):
     rhandler = dialogflow_handler.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-    gentext = "Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+formattedwa
+    if platform == "google":
+        gentext = "<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+"</speak>"
+    else:
+        gentext = "Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+formattedwa
     rhandler.genericResponse(gentext)
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa,"Here are the Nationwide contacts")
@@ -56,6 +59,7 @@ def handler():
     intent = ihandler.get_intent()
     params = ihandler.get_params()
     caps = ihandler.get_capabilities()
+    platform = ihandler.get_source()
     if intent == "welcome_intent":
         fres = on_launch()
     elif intent == "fallback_intent":
@@ -65,7 +69,7 @@ def handler():
     elif intent == "get_statewise":
         fres = get_statewise(params)
     elif intent == "nationwide_contacts":
-        fres = get_nationwide_contacts(caps)
+        fres = get_nationwide_contacts(caps,platform)
     else:
         fres = on_fallback()
     return jsonify(fres)
