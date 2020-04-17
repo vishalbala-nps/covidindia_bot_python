@@ -88,7 +88,7 @@ def get_statewise_contacts(caps,platform,params):
     if platform == "google":
         grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext+"</speak>"
     else:
-        grestext = "Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext
+        grestext = "Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext
     rhandler.genericResponse(grestext.rstrip(','))
     if platform == "google" and "actions.capability.SCREEN_OUTPUT" in caps:
         phcard = "📞 Phone: "+formattedphone
