@@ -49,6 +49,26 @@ def get_nationwide_contacts(caps,platform):
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa,"Here are the Nationwide contacts")
     return rhandler.formResponse()
+
+def get_statewise_contacts(caps,platform,params):
+    rhandler = dialogflow_handler.response_handler()
+    req = requests.get("http://covidstate.in/api/v1/contacts?state="+params["geo-state"])
+    data = req.json()
+    if req.status_code == 404:
+        rhandler.genericResponse("Sorry, I could not get contacts for that state! Could you repeat it?")
+        return rhandler.formResponse()
+    watext = ""
+    emailtext = ""
+    webtext = ""
+    if data["whatsapp"] != None:
+        watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
+    if data["email"] != None:
+        emailtext = "The Email is "+data["email"]+","
+    if data["webtext"] != None:
+        watext = "The Website is"+data["website"]+","
+    rhandler.genericResponse("Here are the contacts for "+params["geo-state"]+","+watext+emailtext+webtext)
+    return rhandler.formResponse()
+    
 #Program Starts here
 app = Flask(__name__)
 
@@ -70,6 +90,8 @@ def handler():
         fres = get_statewise(params)
     elif intent == "nationwide_contacts":
         fres = get_nationwide_contacts(caps,platform)
+    elif intent == "statewise_contacts":
+        fres = get_statewise_contacts(caps,platform,params)
     else:
         fres = on_fallback()
     return jsonify(fres)
