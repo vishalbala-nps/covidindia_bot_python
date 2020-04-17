@@ -60,7 +60,7 @@ def get_statewise_contacts(caps,platform,params):
     watext = ""
     emailtext = ""
     webtext = ""
-    formattedphone = phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL
+    formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     if data["whatsapp"] != None:
         if "actions.capability.SCREEN_OUTPUT" in caps:
             watext = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
@@ -92,9 +92,9 @@ def get_statewise_contacts(caps,platform,params):
     rhandler.genericResponse(grestext.rstrip(','))
     if platform == "google" and "actions.capability.SCREEN_OUTPUT" in caps:
         phcard = "📞 Phone: "+formattedphone
-        webcard = None
-        emailcard = None
-        wacard = None
+        webcard = ""
+        emailcard = ""
+        wacard = ""
         if data["website"] != None:
             webcard = "  \n🌏 Website: "+data["website"]
         if data["email"] != None:
