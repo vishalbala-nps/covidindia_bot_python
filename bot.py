@@ -65,8 +65,9 @@ def get_statewise_contacts(caps,platform,params):
     if data["email"] != None:
         emailtext = "The Email is "+data["email"]+","
     if data["website"] != None:
-        watext = "The Website is"+data["website"]+","
-    rhandler.genericResponse("Here are the contacts for "+params["geo-state"]+","+watext+emailtext+webtext)
+        watext = "The Website is "+data["website"]+","
+    grestext = "Here are the contacts for "+params["geo-state"]+","+watext+emailtext+webtext
+    rhandler.genericResponse(grestext.rstrip(','))
     return rhandler.formResponse()
     
 #Program Starts here
