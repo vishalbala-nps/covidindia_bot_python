@@ -64,7 +64,7 @@ def get_statewise_contacts(caps,platform,params):
         watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
     if data["email"] != None:
         emailtext = "The Email is "+data["email"]+","
-    if data["webtext"] != None:
+    if data["website"] != None:
         watext = "The Website is"+data["website"]+","
     rhandler.genericResponse("Here are the contacts for "+params["geo-state"]+","+watext+emailtext+webtext)
     return rhandler.formResponse()
