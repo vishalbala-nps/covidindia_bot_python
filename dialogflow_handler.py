@@ -8,7 +8,7 @@ class intent_handler():
     def get_capabilities(self):
         try:
             retjson = []
-            for i in self.resjson["originalDetectIntentRequest"]["surface"]["capabilities"]:
+            for i in self.resjson["originalDetectIntentRequest"]["payload"]["surface"]["capabilities"]:
                 retjson.append(i["name"])
             print(retjson)
             return retjson
