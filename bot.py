@@ -101,7 +101,7 @@ def get_statewise_contacts(caps,platform,params):
             emailcard = "  \n📬 Email: "+data["email"]
         if data["whatsapp"] != None:
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
-        rhandler.googleAssistantCard(phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
+        rhandler.googleAssistantCard(params["geo-state"]+" Contacts",phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
     return rhandler.formResponse()
     
 #Program Starts here
