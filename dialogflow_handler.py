@@ -11,14 +11,16 @@ class response_handler():
         self.gcardbtnlist = []
     def genericResponse(self,text):
         self.ftext = text
+    def genericCard(self,title,subtitle):
+        self.cardtitle = title
+        self.cardsubtitle = subtitle
     def googleAssistantCard(self,title,subtitle,text):
         self.gcardtitle = title
-        self.gcardsubtitle = subtitle
+        self.gcardftext = subtitle
         self.gcardspeech = text
     def googleAssistantCardNewButton(self,btntitle,btnlink):
         self.gcardbtnlist.append({"title":btntitle,"openUrlAction":{"url":btnlink}})
     def formResponse(self):
-        import json
         ijson = []
         try:
             self.fulfiljson = {"fulfillmentText":self.ftext}
@@ -27,9 +29,13 @@ class response_handler():
         try:
             ijson.append({"simpleResponse":{"textToSpeech":self.gcardspeech}})
             if self.gcardbtnlist == []:
-                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardsubtitle}})
+                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardftext}})
             else:
-                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardsubtitle,"buttons":self.gcardbtnlist}})
+                ijson.append({"basicCard":{"title":self.gcardtitle,"formatted_text":self.gcardftext,"buttons":self.gcardbtnlist}})
+        except:
+            pass
+        try:
+            self.fulfiljson["card"] = {"title":self.cardtitle,"subtitle":self.cardsubtitle,"buttons":[{"text": "abc"}]}
         except:
             pass
         if ijson != []:
