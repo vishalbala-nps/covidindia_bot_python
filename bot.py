@@ -61,12 +61,22 @@ def get_statewise_contacts(caps,platform,params):
     emailtext = ""
     webtext = ""
     if data["whatsapp"] != None:
-        watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
+        if platform == "google":
+            watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"<say-as>,"
+        else:
+            watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
     if data["email"] != None:
-        emailtext = "The Email is "+data["email"]+","
+        if platform == "google":
+            emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"<say-as>, "
+        else:
+            emailtext = "The Email is "+data["email"]+", "
     if data["website"] != None:
-        watext = "The Website is "+data["website"]+","
-    grestext = "Here are the contacts for "+params["geo-state"]+","+watext+emailtext+webtext
+        if platform == "google":
+            webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"<say-as>, "
+        else:
+            webtext = "The Website is "+data["website"]+", "
+            
+    grestext = "Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext
     rhandler.genericResponse(grestext.rstrip(','))
     return rhandler.formResponse()
     
