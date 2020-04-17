@@ -35,7 +35,9 @@ class response_handler():
         except:
             pass
         try:
-            self.fulfiljson["card"] = {"title":self.cardtitle,"subtitle":self.cardsubtitle,"buttons":[{"text": "abc"}]}
+            self.cardjson = {"title":self.cardtitle,"subtitle":self.cardsubtitle,"buttons":[{"text": "abc"}]}
+            self.fulfiljson["fulfillmentMessages"] = []
+            self.fulfiljson["fulfillmentMessages"].append({"card":self.cardjson})
         except:
             pass
         if ijson != []:
