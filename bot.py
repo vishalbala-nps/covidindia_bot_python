@@ -35,20 +35,15 @@ def get_statewise(p):
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
 
-def get_nationwide_contacts():
+def get_nationwide_contacts(caps):
     rhandler = dialogflow_handler.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     gentext = "Here are the Nationwide contacts: The Helpline number is "+data["phone"]+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+data["whatsapp"]
     rhandler.genericResponse(gentext)
-    #rhandler.googleAssistantCard("Nationwide Contacts","📞 Telephone: "+data["phone"]+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+data["whatsapp"],"Here are the Nationwide contacts")
-    rhandler.googleAssistantNewCarousel("Abc")
-    rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
-    rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
-    rhandler.genericCard("Nationwide Contacts",gentext)
-    rhandler.genericCardNewButton("📞 Call National Helpline","+91"+data["phone"])
-    rhandler.genericCardNewButton("📬 Send Email","mailto:"+data["email"])
-    rhandler.genericCardNewButton("🌏 Visit Website","tel:"+data["website"])
-    rhandler.genericCardNewButton("📱 Chat on Whatsapp","http://wa.me/91"+data["whatsapp"])
+    if "actions.capability.WEB_BROWSER" in caps:
+        rhandler.googleAssistantNewCarousel("Abc")
+        rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
+        rhandler.googleAssistantCarouselNewItem("Abc","http://google.com","abc","def","http://covidstate.in/static/images/virus.png","abc")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
@@ -56,10 +51,10 @@ app = Flask(__name__)
 @app.route("/",methods=["POST"])
 def handler():
     fres = {}
-    print(request.get_json())
     ihandler = dialogflow_handler.intent_handler(request.get_json())
     intent = ihandler.get_intent()
     params = ihandler.get_params()
+    caps = ihandler.get_capabilities()
     if intent == "welcome_intent":
         fres = on_launch()
     elif intent == "fallback_intent":
@@ -69,7 +64,7 @@ def handler():
     elif intent == "get_statewise":
         fres = get_statewise(params)
     elif intent == "nationwide_contacts":
-        fres = get_nationwide_contacts()
+        fres = get_nationwide_contacts(caps)
     else:
         fres = on_fallback()
     return jsonify(fres)
