@@ -23,6 +23,15 @@ class response_handler():
         self.gcardspeech = text
     def googleAssistantCardNewButton(self,btntitle,btnlink):
         self.gcardbtnlist.append({"title":btntitle,"openUrlAction":{"url":btnlink}})
+    def googleAssistantNewCarousel(self,text):
+        self.carousellist = []
+        self.carousellist.append({"simpleResponse":{"textToSpeech":text}})
+        self.carousellist.append({"carouselBrowse":{"items":[]}})
+    def googleAssistantCarouselNewItem(self,title,url,description,footer,imgurl,imgalt):
+        try:
+            self.carousellist[1]["carouselBrowse"]["items"].append({"title":title,"openUrlAction": {"url":url},"description":description,"footer":footer,"image":{"url":imgurl,"accessibilityText":imgalt}})
+        except:
+            raise AttributeError("googleAssistantNewCarousel is not created")
     def formResponse(self):
         ijson = []
         try:
@@ -44,6 +53,10 @@ class response_handler():
                 self.cardjson = {"title":self.cardtitle,"subtitle":self.cardsubtitle}
             self.fulfiljson["fulfillmentMessages"] = []
             self.fulfiljson["fulfillmentMessages"].append({"card":self.cardjson})
+        except:
+            pass
+        try:
+            self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":self.carousellist}}}
         except:
             pass
         if ijson != []:
