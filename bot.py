@@ -74,9 +74,11 @@ def get_statewise_contacts(caps,platform,params):
         if platform == "google":
             webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"<say-as>, "
         else:
-            webtext = "The Website is "+data["website"]+", "
-            
-    grestext = "Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext
+            webtext = "The Website is "+data["website"]
+    if platform == "google":
+        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext+"</speak>"
+    else:
+        grestext = "Here are the contacts for "+params["geo-state"]+", "+watext+emailtext+webtext
     rhandler.genericResponse(grestext.rstrip(','))
     return rhandler.formResponse()
     
