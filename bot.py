@@ -1,11 +1,14 @@
 from flask import *
 import dialogflow_handler
 import requests
+import datetime
 import phonenumbers
 #Functions
 def on_launch():
+    data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("Hello! Welcome to Covidstate India! What can I do for you?")
+    resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
+    rhandler.genericResponse("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
     return rhandler.formResponse()
 
 def on_fallback():
@@ -16,7 +19,8 @@ def on_fallback():
 def get_nationwide():
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?")
+    resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
+    rhandler.genericResponse("<speak>As of "+resdate+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
     return rhandler.formResponse()
 
 def get_statewise(p):
@@ -31,7 +35,8 @@ def get_statewise(p):
     data = requests.get("http://covidstate.in/api/v1/data?state="+state+"&type=latest")
     djson = data.json()
     if data.status_code == 200:
-        rhandler.genericResponse("As of "+djson["timestamp"]["updated_time"]+", there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?")
+        resdate = datetime.datetime.strptime(djson["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
+        rhandler.genericResponse("<speak>As of "+resdate+", there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
     else:
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
