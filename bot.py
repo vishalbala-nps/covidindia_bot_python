@@ -36,7 +36,7 @@ def get_statewise(p):
     djson = data.json()
     if data.status_code == 200:
         resdate = datetime.datetime.strptime(djson["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-        rhandler.genericResponse("<speak>As of "+resdate+", there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
+        rhandler.genericResponse("<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
     else:
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
