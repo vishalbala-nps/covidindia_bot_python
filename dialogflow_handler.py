@@ -48,7 +48,7 @@ class response_handler():
         except:
             raise AttributeError("googleAssistantNewCarousel is not created")
     def telegramInlineKeyboard(self,text):
-        self.teljson = {"payload":{"telegram":{"text":text,"reply_markup":{"inline_keyboard":[]}}}}
+        self.teljson = {"payload":{"telegram":{"text":text,"reply_markup":{"inline_keyboard":[]}}},"platform": "TELEGRAM"}
     def telegramInlineKeyboardNewButton(self,btntext,callbackdata):
         self.teljson["payload"]["telegram"]["reply_markup"]["inline_keyboard"].append({"text":btntext,"callback_data":callbackdata})
     def formResponse(self):
