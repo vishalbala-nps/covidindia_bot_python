@@ -66,7 +66,7 @@ def get_statewise_contacts(caps,platform,params):
             watext = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
         else:
             if platform == "google":
-                watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"<say-as>,"
+                watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"</say-as>,"
             else:
                 watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
     if data["email"] != None:
@@ -74,7 +74,7 @@ def get_statewise_contacts(caps,platform,params):
             emailtext = data["email"]
         else:
             if platform == "google":
-                emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"<say-as>, "
+                emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, "
             else:
                 emailtext = "The Email is "+data["email"]+", "
     if data["website"] != None:
@@ -82,11 +82,11 @@ def get_statewise_contacts(caps,platform,params):
             webtext = data["website"]
         else:
             if platform == "google":
-                webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"<say-as>, "
+                webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"</say-as>"
             else:
                 webtext = "The Website is "+data["website"]
     if platform == "google":
-        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext+"</speak>"
+        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is <say-as interpret-as='characters'>"+formattedphone+"</say-as>, "+watext+emailtext+webtext+"</speak> What else?"
     else:
         grestext = "Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext
     rhandler.genericResponse(grestext.rstrip(','))
