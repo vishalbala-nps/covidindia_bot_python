@@ -47,9 +47,9 @@ class response_handler():
         except:
             raise AttributeError("googleAssistantNewCarousel is not created")
     def telegramInlineKeyboard(self,text):
-        self.teljson = {"text":text,"reply_markup":{"inline_keyboard":[]}}
+        self.teljson = {"telegram":{"text":text,"reply_markup":{"inline_keyboard":[]}}}
     def telegramInlineKeyboardNewButton(self,btntext,callbackdata):
-        self.teljson["reply_markup"]["inline_keyboard"].append({"text":btntext,"callback_data":callbackdata})
+        self.teljson["telegram"]["reply_markup"]["inline_keyboard"].append({"text":btntext,"callback_data":callbackdata})
     def formResponse(self):
         ijson = []
         try:
@@ -74,13 +74,17 @@ class response_handler():
         except:
             pass
         try:
-            self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":self.carousellist}}}
+            for i in self.carousellist:
+                ijson.append(i)
         except:
             pass
         try:
-            self.fulfiljson["payload"]["telegram"] = self.teljson
+            self.fulfiljson["payload"] = self.teljson
         except:
             pass
         if ijson != []:
-            self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}}
+            try:
+                self.fulfiljson["payload"].update({"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}})
+            except:
+                self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}}
         return self.fulfiljson
