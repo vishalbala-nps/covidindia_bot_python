@@ -103,7 +103,16 @@ def get_statewise_contacts(caps,platform,params):
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
         rhandler.googleAssistantCard(params["geo-state"]+" Contacts",phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
     return rhandler.formResponse()
-    
+
+def close_app():
+    rhandler = dialogflow_handler.response_handler()
+    rhandler.genericResponse("Thank you for using Covidstate India! Hope to see you soon")
+    return rhandler.formResponse()
+
+def help_app():
+    rhandler = dialogflow_handler.response_handler()
+    rhandler.genericResponse("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics' I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
+    return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
 
@@ -127,6 +136,10 @@ def handler():
         fres = get_nationwide_contacts(caps,platform)
     elif intent == "statewise_contacts":
         fres = get_statewise_contacts(caps,platform,params)
+    elif intent == "exit_intent":
+        fres = close_app()
+    elif intent == "help_intent":
+        fres = help_app()
     else:
         fres = on_fallback()
     return jsonify(fres)
