@@ -46,6 +46,10 @@ class response_handler():
             self.carousellist[1]["carouselBrowse"]["items"].append({"title":title,"openUrlAction": {"url":url},"description":description,"footer":footer,"image":{"url":imgurl,"accessibilityText":imgalt}})
         except:
             raise AttributeError("googleAssistantNewCarousel is not created")
+    def telegramInlineKeyboard(self,text):
+        self.teljson = {"text":text,"reply_markup":{"inline_keyboard":[]}}
+    def telegramInlineKeyboardNewButton(self,btntext,callbackdata):
+        self.teljson["reply_markup"]["inline_keyboard"].append({"text":btntext,"callback_data":callbackdata})
     def formResponse(self):
         ijson = []
         try:
@@ -71,6 +75,10 @@ class response_handler():
             pass
         try:
             self.fulfiljson["payload"] = {"google":{"expectUserResponse": True,"richResponse":{"items":self.carousellist}}}
+        except:
+            pass
+        try:
+            self.fulfiljson["payload"]["telegram"] = self.teljson
         except:
             pass
         if ijson != []:
