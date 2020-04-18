@@ -4,11 +4,15 @@ import requests
 import datetime
 import phonenumbers
 #Functions
-def on_launch():
+def on_launch(platform):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dialogflow_handler.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-    rhandler.genericResponse("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+    if platform == "google":
+        gres = "<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>"
+    else:
+        gres = "Hello! Welcome to Covidstate India! "+"As of "+data["timestamp"]["updated_time"]+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?"
+    rhandler.genericResponse(gres)
     return rhandler.formResponse()
 
 def on_fallback():
@@ -16,14 +20,18 @@ def on_fallback():
     rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
     return rhandler.formResponse()
 
-def get_nationwide():
+def get_nationwide(platform):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dialogflow_handler.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-    rhandler.genericResponse("<speak>As of "+resdate+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+    if platform == "google":
+        gres = "<speak>As of "+resdate+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>"
+    else:
+        gres = "As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?"
+    rhandler.genericResponse(gres)
     return rhandler.formResponse()
 
-def get_statewise(p):
+def get_statewise(p,platform):
     rhandler = dialogflow_handler.response_handler()
     try:
         state = p["geo-state"]
@@ -36,7 +44,11 @@ def get_statewise(p):
     djson = data.json()
     if data.status_code == 200:
         resdate = datetime.datetime.strptime(djson["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-        rhandler.genericResponse("<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
+        if platform == "google":
+            gres = "<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>"
+        else:
+            gres = "As of "+djson["timestamp"]["updated_time"]+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?"
+        rhandler.genericResponse(gres)
     else:
         rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.formResponse()
@@ -130,13 +142,13 @@ def handler():
     caps = ihandler.get_capabilities()
     platform = ihandler.get_source()
     if intent == "welcome_intent":
-        fres = on_launch()
+        fres = on_launch(platform)
     elif intent == "fallback_intent":
         fres = on_fallback()
     elif intent == "get_nationwide":
-        fres = get_nationwide()
+        fres = get_nationwide(platform)
     elif intent == "get_statewise":
-        fres = get_statewise(params)
+        fres = get_statewise(params,platform)
     elif intent == "nationwide_contacts":
         fres = get_nationwide_contacts(caps,platform)
     elif intent == "statewise_contacts":

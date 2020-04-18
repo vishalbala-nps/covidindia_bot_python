@@ -18,7 +18,7 @@ class intent_handler():
         try:
             return self.resjson["originalDetectIntentRequest"]["source"]
         except:
-            return {}
+            return ""
 
 class response_handler():
     def __init__(self):
