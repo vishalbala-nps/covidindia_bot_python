@@ -24,7 +24,6 @@ class response_handler():
     def __init__(self):
         self.gcardbtnlist = []
         self.cardbtnlist = []
-        self.teljson = ""
     def genericResponse(self,text):
         self.ftext = text
     def genericCard(self,title,subtitle):
@@ -47,10 +46,6 @@ class response_handler():
             self.carousellist[1]["carouselBrowse"]["items"].append({"title":title,"openUrlAction": {"url":url},"description":description,"footer":footer,"image":{"url":imgurl,"accessibilityText":imgalt}})
         except:
             raise AttributeError("googleAssistantNewCarousel is not created")
-    def telegramInlineKeyboard(self,text):
-        self.teljson = {"payload":{"telegram":{"text":text,"reply_markup":{"inline_keyboard":[]}}},"platform": "TELEGRAM"}
-    def telegramInlineKeyboardNewButton(self,btntext,callbackdata):
-        self.teljson["payload"]["telegram"]["reply_markup"]["inline_keyboard"].append({"text":btntext,"callback_data":callbackdata})
     def formResponse(self):
         ijson = []
         try:
@@ -79,12 +74,6 @@ class response_handler():
                 ijson.append(i)
         except:
             pass
-        if self.teljson != "":
-            try:
-                self.fulfiljson["fulfillmentMessages"].append(self.teljson)
-            except:
-                self.fulfiljson["fulfillmentMessages"] = []
-                self.fulfiljson["fulfillmentMessages"].append(self.teljson)
         if ijson != []:
             try:
                 self.fulfiljson["payload"].update({"google":{"expectUserResponse": True,"richResponse":{"items":ijson}}})

@@ -112,9 +112,6 @@ def close_app():
 def help_app():
     rhandler = dialogflow_handler.response_handler()
     rhandler.genericResponse("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
-    rhandler.telegramInlineKeyboard("Abc")
-    rhandler.telegramInlineKeyboardNewButton("Abc","Abc")
-    rhandler.telegramInlineKeyboardNewButton("Abc","Abc")
     return rhandler.formResponse()
 #Program Starts here
 app = Flask(__name__)
