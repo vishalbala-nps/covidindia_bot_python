@@ -85,7 +85,7 @@ def help_app(caps):
     rhandler.generic_rich_text_response("I can get current COVID-19 Statistics for both nationwide and statewise")
     rhandler.generic_rich_text_response("I can also get National and Statewise contacts as well")
     rhandler.generic_rich_text_response("Try clicking on the chips below to try it out")
-    rhandler.generic_rich_text_response(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
+    rhandler.generic_add_suggestions(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
     print(rhandler.create_final_response())
     return rhandler.create_final_response()
 """
