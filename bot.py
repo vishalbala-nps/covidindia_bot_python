@@ -1,45 +1,54 @@
 from flask import *
-import dialogflow_handler
+import dialogflowpy_webhook as dfw
 import requests
 import datetime
 import phonenumbers
 #Functions
-def on_launch(platform):
+def on_launch():
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
-    rhandler = dialogflow_handler.response_handler()
+    rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
+    rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+    rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India!")
+    rhandler.generic_rich_text_response("As of "+data["timestamp"]["updated_time"]+" in India there are,")
+    rhandler.generic_rich_text_response(str(data["data"]["active_cases"])+" Active Patients")
+    rhandler.generic_rich_text_response(str(data["data"]["total"])+" Infected People")
+    rhandler.generic_rich_text_response(str(data["data"]["deaths"])+" Deaths")
+    rhandler.generic_rich_text_response(str(data["data"]["cured"])+" Cured People")
+    rhandler.generic_rich_text_response(str(data["data"]["active_cases"])+" What else?")
+    """
     if platform == "google":
-        gres = "<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>"
+        gres = ""
     else:
-        gres = "Hello! Welcome to Covidstate India! "+"As of "+data["timestamp"]["updated_time"]+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?"
-    rhandler.genericResponse(gres)
-    return rhandler.formResponse()
-
+        gres = +"As of "+data["timestamp"]["updated_time"]+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])
+    """
+    return rhandler.create_final_response()
+"""
 def on_fallback():
-    rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
-    return rhandler.formResponse()
+    rhandler = dfw.response_handler()
+    rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
+    return rhandler.create_final_response()
 
 def get_nationwide(platform):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
-    rhandler = dialogflow_handler.response_handler()
+    rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     if platform == "google":
         gres = "<speak>As of "+resdate+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>"
     else:
         gres = "As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?"
-    rhandler.genericResponse(gres)
-    return rhandler.formResponse()
+    rhandler.simple_response(gres)
+    return rhandler.create_final_response()
 
 def get_statewise(p,platform):
-    rhandler = dialogflow_handler.response_handler()
+    rhandler = dfw.response_handler()
     try:
         state = p["geo-state"]
     except:
-        rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
-        return rhandler.formResponse()
+        rhandler.simple_response("Sorry, I could not get statistics that state! Could you please repeat it?")
+        return rhandler.create_final_response()
     if state == None:
-        rhandler.genericResponse("Sorry, I did not get that! Could you repeat it?")
+        rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
     data = requests.get("http://covidstate.in/api/v1/data?state="+state+"&type=latest")
     djson = data.json()
     if data.status_code == 200:
@@ -48,13 +57,13 @@ def get_statewise(p,platform):
             gres = "<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>"
         else:
             gres = "As of "+djson["timestamp"]["updated_time"]+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?"
-        rhandler.genericResponse(gres)
+        rhandler.simple_response(gres)
     else:
-        rhandler.genericResponse("Sorry, I could not get statistics that state! Could you please repeat it?")
-    return rhandler.formResponse()
+        rhandler.simple_response("Sorry, I could not get statistics that state! Could you please repeat it?")
+    return rhandler.create_final_response()
 
 def get_nationwide_contacts(caps,platform):
-    rhandler = dialogflow_handler.response_handler()
+    rhandler = dfw.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
@@ -62,18 +71,18 @@ def get_nationwide_contacts(caps,platform):
         gentext = "<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+" <break time='200ms'/>What else?</speak>"
     else:
         gentext = "Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+formattedwa
-    rhandler.genericResponse(gentext)
+    rhandler.simple_response(gentext)
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa,"Here are the Nationwide contacts")
-    return rhandler.formResponse()
+    return rhandler.create_final_response()
 
 def get_statewise_contacts(caps,platform,params):
-    rhandler = dialogflow_handler.response_handler()
+    rhandler = dfw.response_handler()
     req = requests.get("http://covidstate.in/api/v1/contacts?state="+params["geo-state"])
     data = req.json()
     if req.status_code == 404:
-        rhandler.genericResponse("Sorry, I could not get contacts for that state! Could you repeat it?")
-        return rhandler.formResponse()
+        rhandler.simple_response("Sorry, I could not get contacts for that state! Could you repeat it?")
+        return rhandler.create_final_response()
     watext = ""
     emailtext = ""
     webtext = ""
@@ -106,7 +115,7 @@ def get_statewise_contacts(caps,platform,params):
         grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is <say-as interpret-as='characters'>"+formattedphone+"</say-as>, "+watext+emailtext+webtext+" <break time='200ms'/>What else?</speak>"
     else:
         grestext = "Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext
-    rhandler.genericResponse(grestext.rstrip(','))
+    rhandler.simple_response(grestext.rstrip(','))
     if platform == "google" and "actions.capability.SCREEN_OUTPUT" in caps:
         phcard = "📞 Phone: "+formattedphone
         webcard = ""
@@ -119,17 +128,18 @@ def get_statewise_contacts(caps,platform,params):
         if data["whatsapp"] != None:
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
         rhandler.googleAssistantCard(params["geo-state"]+" Contacts",phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
-    return rhandler.formResponse()
+    return rhandler.create_final_response()
 
 def close_app():
-    rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("Thank you for using Covidstate India! Hope to see you soon")
-    return rhandler.formResponse()
+    rhandler = dfw.response_handler()
+    rhandler.simple_response("Thank you for using Covidstate India! Hope to see you soon")
+    return rhandler.create_final_response()
 
 def help_app():
-    rhandler = dialogflow_handler.response_handler()
-    rhandler.genericResponse("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
-    return rhandler.formResponse()
+    rhandler = dfw.response_handler()
+    rhandler.simple_response("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
+    return rhandler.create_final_response()
+"""
 #Program Starts here
 app = Flask(__name__)
 
@@ -137,13 +147,14 @@ app = Flask(__name__)
 def handler():
     fres = {}
     print(request.get_json())
-    ihandler = dialogflow_handler.intent_handler(request.get_json())
-    intent = ihandler.get_intent()
-    params = ihandler.get_params()
+    ihandler = dfw.request_handler(request.get_json())
+    intent = ihandler.get_intent_displayName()
+    params = ihandler.get_parameters()
     caps = ihandler.get_capabilities()
     platform = ihandler.get_source()
     if intent == "welcome_intent":
-        fres = on_launch(platform)
+        fres = on_launch()
+    """
     elif intent == "fallback_intent":
         fres = on_fallback()
     elif intent == "get_nationwide":
@@ -160,6 +171,7 @@ def handler():
         fres = help_app()
     else:
         fres = on_fallback()
+    """
     return jsonify(fres)
 
 if __name__ == "__main__":
