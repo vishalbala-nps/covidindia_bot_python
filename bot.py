@@ -20,12 +20,17 @@ def on_launch(caps):
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
-def get_nationwide():
+def get_nationwide(caps):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-    rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
-    
+    if "actions.capability.SCREEN_OUTPUT" in caps:
+        rhandler.google_assistant_response("Here are the Nationwide statistics")
+        rhandler.google_assistant_card(title="Nationwide statistics",formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
+        rhandler.google_assistant_response("What else?")
+    else:
+        rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+
     rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
