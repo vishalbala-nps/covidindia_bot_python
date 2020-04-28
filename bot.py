@@ -86,6 +86,7 @@ def help_app(caps):
     rhandler.generic_rich_text_response("I can also get National and Statewise contacts as well")
     rhandler.generic_rich_text_response("Try clicking on the chips below to try it out")
     rhandler.generic_rich_text_response(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
+    print(rhandler.create_final_response())
     return rhandler.create_final_response()
 """
 def get_nationwide_contacts(caps,platform):
