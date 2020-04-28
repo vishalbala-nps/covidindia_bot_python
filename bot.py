@@ -14,21 +14,21 @@ def on_launch():
     rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
-"""
-def on_fallback():
-    rhandler = dfw.response_handler()
-    rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
-    return rhandler.create_final_response()
 
 def get_nationwide(platform):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-    if platform == "google":
-        gres = "<speak>As of "+resdate+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>"
-    else:
-        gres = "As of "+data["timestamp"]["updated_time"]+", there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?"
-    rhandler.simple_response(gres)
+    rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+    
+    rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
+    rhandler.generic_rich_text_response("What else?")
+    return rhandler.create_final_response()
+
+"""
+def on_fallback():
+    rhandler = dfw.response_handler()
+    rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
     return rhandler.create_final_response()
 
 def get_statewise(p,platform):
@@ -145,11 +145,11 @@ def handler():
     platform = ihandler.get_source()
     if intent == "welcome_intent":
         fres = on_launch()
+    elif intent == "get_nationwide":
+        fres = get_nationwide(platform)
     """
     elif intent == "fallback_intent":
         fres = on_fallback()
-    elif intent == "get_nationwide":
-        fres = get_nationwide(platform)
     elif intent == "get_statewise":
         fres = get_statewise(params,platform)
     elif intent == "nationwide_contacts":
