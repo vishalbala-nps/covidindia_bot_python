@@ -9,11 +9,11 @@ def on_launch(caps):
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     if "actions.capability.SCREEN_OUTPUT" in caps:
-        rhandler.google_assistant_response(speech="<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people.</speak>",displayText="Hello! Welcome to Covidstate India! Here are the Nationwide statistics")
+        rhandler.google_assistant_response(speech="<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["active_cases"])+" Active Patients, "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people.</speak>",displayText="Hello! Welcome to Covidstate India! Here are the Nationwide statistics")
         rhandler.google_assistant_card(title="Nationwide statistics",subtitle="As of:"+data["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["cured"]))
         rhandler.google_assistant_response("What else?")
     else:
-        rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+        rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["active_cases"])+" Active Patients, "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
     
     rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India! Here are the current nationwide statistics")
     rhandler.generic_card(title="Nationwide statistics (As of:"+data["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["cured"]))
@@ -25,11 +25,11 @@ def get_nationwide(caps):
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     if "actions.capability.SCREEN_OUTPUT" in caps:
-        rhandler.google_assistant_response(speech="<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people.</speak>",displayText="Here are the Nationwide statistics")
+        rhandler.google_assistant_response(speech="<speak>As of "+resdate+" in India, there are "+str(data["data"]["active_cases"])+" Active Patients, "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people.</speak>",displayText="Here are the Nationwide statistics")
         rhandler.google_assistant_card(title="Nationwide statistics",subtitle="As Of: "+data["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["cured"]))
         rhandler.google_assistant_response("What else?")
     else:
-        rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+        rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["active_cases"])+" Active Patients, "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
 
     rhandler.generic_card(title="Nationwide statistics (As of: "+data["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["cured"]))
     rhandler.generic_rich_text_response("What else?")
@@ -136,53 +136,9 @@ def get_statewise_contacts(caps,params):
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.google_assistant_response(speech=grestext,displayText="Here are the nationwide contacts")
         rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",formatted_text=phcard+webcard+emailcard+wacard)
-        rhandler.google_assistant_response("What else?")
     else:
         rhandler.google_assistant_response(speech=grestext)
     rhandler.generic_card(title=params["geo-state"]+" Contacts",subtitle=phcard+gwebcard+gemailcard+gwacard)
-    """
-    if data["whatsapp"] != None:
-        if "actions.capability.SCREEN_OUTPUT" in caps:
-            watext = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        else:
-            if platform == "google":
-                
-            else:
-                watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
-    if data["email"] != None:
-        if "actions.capability.SCREEN_OUTPUT" in caps:
-            emailtext = data["email"]
-        else:
-            if platform == "google":
-                emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, "
-            else:
-                emailtext = "The Email is "+data["email"]+", "
-    if data["website"] != None:
-        if "actions.capability.SCREEN_OUTPUT" in caps:
-            webtext = data["website"]
-        else:
-            if platform == "google":
-                webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"</say-as>"
-            else:
-                webtext = "The Website is "+data["website"]
-    if platform == "google":
-        
-    else:
-        grestext = "Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext
-    rhandler.simple_response(grestext.rstrip(','))
-    if platform == "google" and "actions.capability.SCREEN_OUTPUT" in caps:
-        phcard = "📞 Phone: "+formattedphone
-        webcard = ""
-        emailcard = ""
-        wacard = ""
-        if data["website"] != None:
-            webcard = "  \n🌏 Website: "+data["website"]
-        if data["email"] != None:
-            emailcard = "  \n📬 Email: "+data["email"]
-        if data["whatsapp"] != None:
-            wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
-        rhandler.googleAssistantCard(,,"Here are the contacts for "+params["geo-state"])
-    """
     return rhandler.create_final_response()
 
 #Program Starts here
