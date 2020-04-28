@@ -74,13 +74,10 @@ def close_app():
 
 def help_app(caps):
     rhandler = dfw.response_handler()
-    if "actions.capability.SCREEN_OUTPUT" in caps:
-        rhandler.google_assistant_response("I can get current COVID-19 Statistics for both nationwide and statewise")
-        rhandler.google_assistant_response("I can also get National and Statewise contacts as well")
-        rhandler.google_assistant_response("Try clicking on the chips below to try it out")
-        rhandler.google_assistant_add_suggestions(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
-    else:
-        rhandler.google_assistant_response("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
+    rhandler.google_assistant_response("I can get current COVID-19 Statistics for both nationwide and statewise")
+    rhandler.google_assistant_response("I can also get National and Statewise contacts as well")
+    rhandler.google_assistant_response("Try clicking on the chips below to try it out")
+    rhandler.google_assistant_response("Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
     
     rhandler.generic_rich_text_response("I can get current COVID-19 Statistics for both nationwide and statewise")
     rhandler.generic_rich_text_response("I can also get National and Statewise contacts as well")
