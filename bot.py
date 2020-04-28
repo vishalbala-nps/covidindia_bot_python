@@ -9,22 +9,10 @@ def on_launch():
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
-    rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India!")
-    """
-    rhandler.generic_rich_text_response("As of "+data["timestamp"]["updated_time"]+" in India there are,")
-    rhandler.generic_rich_text_response(str(data["data"]["active_cases"])+" Active Patients")
-    rhandler.generic_rich_text_response(str(data["data"]["total"])+" Infected People")
-    rhandler.generic_rich_text_response(str(data["data"]["deaths"])+" Deaths")
-    rhandler.generic_rich_text_response(str(data["data"]["cured"])+" Cured People")
-    rhandler.generic_rich_text_response(str(data["data"]["active_cases"])+" What else?")
-    """
-    rhandler.generic_card(title="Abc",subtitle="Def\nEfg<br>123")
-    """
-    if platform == "google":
-        gres = ""
-    else:
-        gres = +"As of "+data["timestamp"]["updated_time"]+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])
-    """
+    
+    rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India! Here are the current nationwide statistics")
+    rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
+    rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 """
 def on_fallback():
