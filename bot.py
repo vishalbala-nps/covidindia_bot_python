@@ -108,6 +108,7 @@ def get_statewise_contacts(caps,params):
     emailtext = ""
     webtext = ""
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    #Speech
     if data["whatsapp"] != None:
         watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"</say-as>,"
     if data["email"] != None:
@@ -115,24 +116,25 @@ def get_statewise_contacts(caps,params):
     if data["website"] != None:
         webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"</say-as>"
     grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is <say-as interpret-as='characters'>"+formattedphone+"</say-as>, "+watext+emailtext+webtext+" <break time='200ms'/>What else?</speak>"
+    #Card
+    phcard = "📞 Phone: "+formattedphone
+    webcard = ""
+    gwebcard = ""
+    emailcard = ""
+    gemailcard = ""
+    wacard = ""
+    gwacard = ""
+    if data["website"] != None:
+        webcard = "  \n🌏 Website: "+data["website"]
+        gwebcard = "\n🌏 Website: "+data["website"]
+    if data["email"] != None:
+        emailcard = "  \n📬 Email: "+data["email"]
+        gemailcard = "\n📬 Email: "+data["email"]
+    if data["whatsapp"] != None:
+        wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
+        gwacard = "\n📬 Email: "+data["email"]
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.google_assistant_response(speech=grestext,displayText="Here are the nationwide contacts")
-        phcard = "📞 Phone: "+formattedphone
-        webcard = ""
-        gwebcard = ""
-        emailcard = ""
-        gemailcard = ""
-        wacard = ""
-        gwacard = ""
-        if data["website"] != None:
-            webcard = "  \n🌏 Website: "+data["website"]
-            gwebcard = "\n🌏 Website: "+data["website"]
-        if data["email"] != None:
-            emailcard = "  \n📬 Email: "+data["email"]
-            gemailcard = "\n📬 Email: "+data["email"]
-        if data["whatsapp"] != None:
-            wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
-            gwacard = "\n📬 Email: "+data["email"]
         rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",formatted_text=phcard+webcard+emailcard+wacard)
         rhandler.google_assistant_response("What else?")
     else:
