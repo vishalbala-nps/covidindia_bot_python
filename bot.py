@@ -134,10 +134,10 @@ def get_statewise_contacts(caps,params):
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
             gwacard = "\n📬 Email: "+data["email"]
         rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",formatted_text=phcard+webcard+emailcard+wacard)
-        rhandler.generic_card(title=params["geo-state"]+" Contacts",subtitle=phcard+gwebcard+gemailcard+gwacard)
         rhandler.google_assistant_response("What else?")
     else:
         rhandler.google_assistant_response(speech=grestext)
+    rhandler.generic_card(title=params["geo-state"]+" Contacts",subtitle=phcard+gwebcard+gemailcard+gwacard)
     """
     if data["whatsapp"] != None:
         if "actions.capability.SCREEN_OUTPUT" in caps:
