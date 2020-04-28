@@ -54,11 +54,11 @@ def get_statewise(p,caps):
     if data.status_code == 200:
         resdate = datetime.datetime.strptime(djson["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
         if "actions.capability.SCREEN_OUTPUT" in caps:
-            rhandler.google_assistant_response(speech="<speak>As of "+resdate+", in "+p["geo-state"]+" there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people.</speak>",displayText="Here are the statistics of "+p["geo-state"])
+            rhandler.google_assistant_response(speech="<speak>As of "+resdate+", in "+p["geo-state"]+" there are "+str(djson["data"]["active_cases"])+" active patients, "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people.</speak>",displayText="Here are the statistics of "+p["geo-state"])
             rhandler.google_assistant_card(title="Statistics of "+p["geo-state"],subtitle="As Of: "+djson["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(djson["data"]["active_cases"])+"  \nInfected People: "+str(djson["data"]["total"])+"  \nDeaths: "+str(djson["data"]["deaths"])+"  \nCured People: "+str(djson["data"]["cured"]))
             rhandler.google_assistant_response("What else?")
         else:
-            rhandler.google_assistant_response("<speak>As of "+resdate+", in "+p["geo-state"]+" there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
+            rhandler.google_assistant_response("<speak>As of "+resdate+", in "+p["geo-state"]+str(djson["data"]["active_cases"])+" active patients, "+" there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
         
         rhandler.generic_card(title="Statistics of "+p["geo-state"]+" (As of: "+djson["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(djson["data"]["active_cases"])+"\nInfected People: "+str(djson["data"]["total"])+"\nDeaths: "+str(djson["data"]["deaths"])+"\nCured People: "+str(djson["data"]["cured"]))
         rhandler.generic_rich_text_response("What else?")
