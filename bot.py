@@ -4,18 +4,23 @@ import requests
 import datetime
 import phonenumbers
 #Functions
-def on_launch():
+def on_launch(caps):
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-    rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
+    if "actions.capability.SCREEN_OUTPUT" in caps:
+        rhandler.google_assistant_response("Hello! Welcome to Covidstate India! Here are the Nationwide statistics")
+        rhandler.google_assistant_card(title="Nationwide statistics",formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
+        rhandler.google_assistant_response("What else?")
+    else:
+        rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
     
     rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India! Here are the current nationwide statistics")
     rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
-def get_nationwide(platform):
+def get_nationwide():
     data = requests.get("http://covidstate.in/api/v1/data?type=latest&state=India").json()
     rhandler = dfw.response_handler()
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
@@ -144,9 +149,9 @@ def handler():
     caps = ihandler.get_capabilities()
     platform = ihandler.get_source()
     if intent == "welcome_intent":
-        fres = on_launch()
+        fres = on_launch(caps)
     elif intent == "get_nationwide":
-        fres = get_nationwide(platform)
+        fres = get_nationwide()
     """
     elif intent == "fallback_intent":
         fres = on_fallback()
