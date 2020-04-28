@@ -87,7 +87,7 @@ def get_nationwide_contacts(caps):
     rhandler = dfw.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-    formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.google_assistant_response(speech="<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+" <break time='200ms'/>What else?</speak>",displayText="Here are the nationwide contacts")
         rhandler.google_assistant_card(title="Nationwide Contacts",formatted_text="📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa)
