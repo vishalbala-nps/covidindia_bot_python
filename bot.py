@@ -35,12 +35,12 @@ def get_nationwide(caps):
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
-"""
+
 def on_fallback():
     rhandler = dfw.response_handler()
     rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
     return rhandler.create_final_response()
-
+"""
 def get_statewise(p,platform):
     rhandler = dfw.response_handler()
     try:
@@ -156,7 +156,9 @@ def handler():
     if intent == "welcome_intent":
         fres = on_launch(caps)
     elif intent == "get_nationwide":
-        fres = get_nationwide()
+        fres = get_nationwide(caps)
+    elif intent == "fallback_intent":
+        fres = on_fallback()
     """
     elif intent == "fallback_intent":
         fres = on_fallback()
