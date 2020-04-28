@@ -96,8 +96,8 @@ def get_nationwide_contacts(caps):
     rhandler.generic_card(title="Nationwide Contacts",subtitle="📞 Phone: "+formattedphone+"\n📬 Email: "+data["email"]+"\n🌏 Website: "+data["website"]+"\n📱 Whatsapp:"+formattedwa)
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
-"""
-def get_statewise_contacts(caps,platform,params):
+
+def get_statewise_contacts(caps,params):
     rhandler = dfw.response_handler()
     req = requests.get("http://covidstate.in/api/v1/contacts?state="+params["geo-state"])
     data = req.json()
@@ -109,11 +109,35 @@ def get_statewise_contacts(caps,platform,params):
     webtext = ""
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     if data["whatsapp"] != None:
+        watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"</say-as>,"
+    if data["email"] != None:
+        emailtext = "The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, "
+    if data["website"] != None:
+        webtext = "The Website is <say-as interpret-as='characters'>"+data["website"]+"</say-as>"
+    grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is <say-as interpret-as='characters'>"+formattedphone+"</say-as>, "+watext+emailtext+webtext+" <break time='200ms'/>What else?</speak>"
+    if "actions.capability.SCREEN_OUTPUT" in caps:
+        rhandler.google_assistant_response(speech=grestext,displayText="Here are the nationwide contacts")
+        phcard = "📞 Phone: "+formattedphone
+        webcard = ""
+        emailcard = ""
+        wacard = ""
+        if data["website"] != None:
+            webcard = "  \n🌏 Website: "+data["website"]
+        if data["email"] != None:
+            emailcard = "  \n📬 Email: "+data["email"]
+        if data["whatsapp"] != None:
+            wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
+        rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",subtitle=phcard+webcard+emailcard+wacard)
+        rhandler.google_assistant_response("What else?")
+    else:
+        rhandler.google_assistant_response(speech=grestext)
+    """
+    if data["whatsapp"] != None:
         if "actions.capability.SCREEN_OUTPUT" in caps:
             watext = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
         else:
             if platform == "google":
-                watext = "The Whatsapp Number is <say-as interpret-as='characters'>"+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+"</say-as>,"
+                
             else:
                 watext = "The Whatsapp Number is "+phonenumbers.format_number(phonenumbers.parse("+91"+str(data["whatsapp"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)+","
     if data["email"] != None:
@@ -133,7 +157,7 @@ def get_statewise_contacts(caps,platform,params):
             else:
                 webtext = "The Website is "+data["website"]
     if platform == "google":
-        grestext = "<speak>Here are the contacts for "+params["geo-state"]+", The Phone number is <say-as interpret-as='characters'>"+formattedphone+"</say-as>, "+watext+emailtext+webtext+" <break time='200ms'/>What else?</speak>"
+        
     else:
         grestext = "Here are the contacts for "+params["geo-state"]+", The Phone number is "+formattedphone+", "+watext+emailtext+webtext
     rhandler.simple_response(grestext.rstrip(','))
@@ -148,9 +172,10 @@ def get_statewise_contacts(caps,platform,params):
             emailcard = "  \n📬 Email: "+data["email"]
         if data["whatsapp"] != None:
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
-        rhandler.googleAssistantCard(params["geo-state"]+" Contacts",phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
+        rhandler.googleAssistantCard(,,"Here are the contacts for "+params["geo-state"])
+    """
     return rhandler.create_final_response()
-"""
+
 #Program Starts here
 app = Flask(__name__)
 
