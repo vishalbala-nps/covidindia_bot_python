@@ -66,6 +66,27 @@ def get_statewise(p,caps):
     else:
         rhandler.simple_response("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.create_final_response()
+
+def close_app():
+    rhandler = dfw.response_handler()
+    rhandler.simple_response("Thank you for using Covidstate India! Hope to see you soon")
+    return rhandler.create_final_response()
+
+def help_app(caps):
+    rhandler = dfw.response_handler()
+    if "actions.capability.SCREEN_OUTPUT" in caps:
+        rhandler.google_assistant_response("I can get current COVID-19 Statistics for both nationwide and statewise")
+        rhandler.google_assistant_response("I can also get National and Statewise contacts as well")
+        rhandler.google_assistant_response("Try clicking on the chips below to try it out")
+        rhandler.google_assistant_add_suggestions(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
+    else:
+        rhandler.google_assistant_response("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
+    
+    rhandler.generic_rich_text_response("I can get current COVID-19 Statistics for both nationwide and statewise")
+    rhandler.generic_rich_text_response("I can also get National and Statewise contacts as well")
+    rhandler.generic_rich_text_response("Try clicking on the chips below to try it out")
+    rhandler.generic_rich_text_response(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
+    return rhandler.create_final_response()
 """
 def get_nationwide_contacts(caps,platform):
     rhandler = dfw.response_handler()
@@ -134,16 +155,6 @@ def get_statewise_contacts(caps,platform,params):
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
         rhandler.googleAssistantCard(params["geo-state"]+" Contacts",phcard+webcard+emailcard+wacard,"Here are the contacts for "+params["geo-state"])
     return rhandler.create_final_response()
-
-def close_app():
-    rhandler = dfw.response_handler()
-    rhandler.simple_response("Thank you for using Covidstate India! Hope to see you soon")
-    return rhandler.create_final_response()
-
-def help_app():
-    rhandler = dfw.response_handler()
-    rhandler.simple_response("I can get current COVID-19 Statistics for both nationwide and statewise. Just say 'get me the statistics for Tamil Nadu' or 'get me the nationwide statistics'. I can also get National and Statewise contacts as well. Just say 'get me the nationwide contacts' or 'get me the contacts for tamil nadu'")
-    return rhandler.create_final_response()
 """
 #Program Starts here
 app = Flask(__name__)
@@ -160,19 +171,20 @@ def handler():
         fres = on_launch(caps)
     elif intent == "get_nationwide":
         fres = get_nationwide(caps)
-    elif intent == "fallback_intent":
-        fres = on_fallback()
+    elif intent == "exit_intent":
+        fres = close_app()
+    elif intent == "help_intent":
+        fres = help_app(caps)
     elif intent == "get_statewise":
         fres = get_statewise(params,caps)
+    elif intent == "fallback_intent":
+        fres = on_fallback()
     """
     elif intent == "nationwide_contacts":
         fres = get_nationwide_contacts(caps,platform)
     elif intent == "statewise_contacts":
         fres = get_statewise_contacts(caps,platform,params)
-    elif intent == "exit_intent":
-        fres = close_app()
-    elif intent == "help_intent":
-        fres = help_app()
+
     else:
         fres = on_fallback()
     """
