@@ -26,12 +26,12 @@ def get_nationwide(caps):
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.google_assistant_response("Here are the Nationwide statistics")
-        rhandler.google_assistant_card(title="Nationwide statistics",formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
+        rhandler.google_assistant_card(title="Nationwide statistics",subtitle="As Of: "+data["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
         rhandler.google_assistant_response("What else?")
     else:
         rhandler.google_assistant_response("<speak>As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
 
-    rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
+    rhandler.generic_card(title="Nationwide statistics (As of: "+data["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
@@ -40,8 +40,8 @@ def on_fallback():
     rhandler = dfw.response_handler()
     rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
     return rhandler.create_final_response()
-"""
-def get_statewise(p,platform):
+
+def get_statewise(p,caps):
     rhandler = dfw.response_handler()
     try:
         state = p["geo-state"]
@@ -54,15 +54,19 @@ def get_statewise(p,platform):
     djson = data.json()
     if data.status_code == 200:
         resdate = datetime.datetime.strptime(djson["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
-        if platform == "google":
-            gres = "<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>"
+        if "actions.capability.SCREEN_OUTPUT" in caps:
+            rhandler.google_assistant_response("Here are the statistics of "+p["geo-state"])
+            rhandler.google_assistant_card(title="Statistics of "+p["geo-state"],subtitle="As Of: "+djson["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(djson["data"]["active_cases"])+"  \nInfected People: "+str(djson["data"]["total"])+"  \nDeaths: "+str(djson["data"]["deaths"])+"  \nCured People: "+str(djson["data"]["active_cases"]))
+            rhandler.google_assistant_response("What else?")
         else:
-            gres = "As of "+djson["timestamp"]["updated_time"]+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?"
-        rhandler.simple_response(gres)
+            rhandler.google_assistant_response("<speak>As of "+resdate+", in "+p["geo-state"]+"there are "+str(djson["data"]["total"])+" infected people, "+str(djson["data"]["deaths"])+" deaths and "+str(djson["data"]["cured"])+" cured people. What else?</speak>")
+        
+        rhandler.generic_card(title="Statistics of "+p["geo-state"]+" (As of: "+djson["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(djson["data"]["active_cases"])+"\nInfected People: "+str(djson["data"]["total"])+"\nDeaths: "+str(djson["data"]["deaths"])+"\nCured People: "+str(djson["data"]["active_cases"]))
+        rhandler.generic_rich_text_response("What else?")
     else:
         rhandler.simple_response("Sorry, I could not get statistics that state! Could you please repeat it?")
     return rhandler.create_final_response()
-
+"""
 def get_nationwide_contacts(caps,platform):
     rhandler = dfw.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
@@ -152,18 +156,15 @@ def handler():
     intent = ihandler.get_intent_displayName()
     params = ihandler.get_parameters()
     caps = ihandler.get_capabilities()
-    platform = ihandler.get_source()
     if intent == "welcome_intent":
         fres = on_launch(caps)
     elif intent == "get_nationwide":
         fres = get_nationwide(caps)
     elif intent == "fallback_intent":
         fres = on_fallback()
-    """
-    elif intent == "fallback_intent":
-        fres = on_fallback()
     elif intent == "get_statewise":
-        fres = get_statewise(params,platform)
+        fres = get_statewise(params,caps)
+    """
     elif intent == "nationwide_contacts":
         fres = get_nationwide_contacts(caps,platform)
     elif intent == "statewise_contacts":
