@@ -35,7 +35,6 @@ def get_nationwide(caps):
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
-
 def on_fallback():
     rhandler = dfw.response_handler()
     rhandler.simple_response("Sorry, I did not get that! Could you repeat it?")
@@ -83,21 +82,21 @@ def help_app(caps):
     rhandler.generic_add_suggestions(["get me the statistics for Tamil Nadu","get me the nationwide statistics","get me the nationwide contacts","get me the contacts for Tamil Nadu"])
     print(rhandler.create_final_response())
     return rhandler.create_final_response()
-"""
-def get_nationwide_contacts(caps,platform):
+
+def get_nationwide_contacts(caps):
     rhandler = dfw.response_handler()
     data = requests.get("http://covidstate.in/api/v1/contacts?state=India").json()
     formattedphone = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
     formattedwa = phonenumbers.format_number(phonenumbers.parse("+91"+str(data["phone"])),phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-    if platform == "google":
-        gentext = "<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+" <break time='200ms'/>What else?</speak>"
-    else:
-        gentext = "Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is "+data["email"]+", The website is "+data["website"]+" and the Whatsapp number is "+formattedwa
-    rhandler.simple_response(gentext)
     if "actions.capability.SCREEN_OUTPUT" in caps:
-        rhandler.googleAssistantCard("Nationwide Contacts","📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa,"Here are the Nationwide contacts")
+        rhandler.google_assistant_response(speech="<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+" <break time='200ms'/>What else?</speak>",displayText="Here are the nationwide contacts")
+        rhandler.google_assistant_card(title="Nationwide Contacts",formatted_text="📞 Phone: "+formattedphone+"  \n📬 Email: "+data["email"]+"  \n🌏 Website: "+data["website"]+"  \n📱 Whatsapp:"+formattedwa)
+    else:
+        rhandler.google_assistant_response("<speak>Here are the Nationwide contacts: The Helpline number is "+formattedphone+", The Email is <say-as interpret-as='characters'>"+data["email"]+"</say-as>, The website is <say-as interpret-as='characters'>"+data["website"]+"</say-as> and the Whatsapp number is "+formattedwa+" <break time='200ms'/>What else?</speak>")
+    rhandler.generic_card(title="Nationwide Contacts",subtitle="📞 Phone: "+formattedphone+"\n📬 Email: "+data["email"]+"\n🌏 Website: "+data["website"]+"\n📱 Whatsapp:"+formattedwa)
+    rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
-
+"""
 def get_statewise_contacts(caps,platform,params):
     rhandler = dfw.response_handler()
     req = requests.get("http://covidstate.in/api/v1/contacts?state="+params["geo-state"])
@@ -175,9 +174,9 @@ def handler():
         fres = get_statewise(params,caps)
     elif intent == "fallback_intent":
         fres = on_fallback()
-    """
     elif intent == "nationwide_contacts":
-        fres = get_nationwide_contacts(caps,platform)
+        fres = get_nationwide_contacts(caps)
+    """
     elif intent == "statewise_contacts":
         fres = get_statewise_contacts(caps,platform,params)
 
