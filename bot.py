@@ -10,13 +10,13 @@ def on_launch(caps):
     resdate = datetime.datetime.strptime(data["timestamp"]["updated_time"],"%Y-%m-%d %I:%M %p").strftime("%Y-%m-%d<break time='200ms'/>%I:%M %p")
     if "actions.capability.SCREEN_OUTPUT" in caps:
         rhandler.google_assistant_response("Hello! Welcome to Covidstate India! Here are the Nationwide statistics")
-        rhandler.google_assistant_card(title="Nationwide statistics",formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
+        rhandler.google_assistant_card(title="Nationwide statistics",subtitle="As of:"+data["timestamp"]["updated_time"],formatted_text="Active Patients: "+str(data["data"]["active_cases"])+"  \nInfected People: "+str(data["data"]["total"])+"  \nDeaths: "+str(data["data"]["deaths"])+"  \nCured People: "+str(data["data"]["active_cases"]))
         rhandler.google_assistant_response("What else?")
     else:
         rhandler.google_assistant_response("<speak>Hello! Welcome to Covidstate India! "+"As of "+resdate+" in India, there are "+str(data["data"]["total"])+" infected people, "+str(data["data"]["deaths"])+" deaths and "+str(data["data"]["cured"])+" cured people. What else?</speak>")
     
     rhandler.generic_rich_text_response("Hello! Welcome to Covidstate India! Here are the current nationwide statistics")
-    rhandler.generic_card(title="Nationwide statistics",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
+    rhandler.generic_card(title="Nationwide statistics (As of:"+data["timestamp"]["updated_time"]+")",subtitle="Active Patients: "+str(data["data"]["active_cases"])+"\nInfected People: "+str(data["data"]["total"])+"\nDeaths: "+str(data["data"]["deaths"])+"\nCured People: "+str(data["data"]["active_cases"]))
     rhandler.generic_rich_text_response("What else?")
     return rhandler.create_final_response()
 
