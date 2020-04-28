@@ -202,10 +202,9 @@ def handler():
     elif intent == "nationwide_contacts":
         fres = get_nationwide_contacts(caps)
     elif intent == "statewise_contacts":
-        fres = get_statewise_contacts(caps,platform,params)
+        fres = get_statewise_contacts(caps,params)
     else:
         fres = on_fallback()
-    """
     return jsonify(fres)
 
 if __name__ == "__main__":
