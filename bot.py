@@ -119,15 +119,22 @@ def get_statewise_contacts(caps,params):
         rhandler.google_assistant_response(speech=grestext,displayText="Here are the nationwide contacts")
         phcard = "📞 Phone: "+formattedphone
         webcard = ""
+        gwebcard = ""
         emailcard = ""
+        gemailcard = ""
         wacard = ""
+        gwacard = ""
         if data["website"] != None:
             webcard = "  \n🌏 Website: "+data["website"]
+            gwebcard = "\n🌏 Website: "+data["website"]
         if data["email"] != None:
             emailcard = "  \n📬 Email: "+data["email"]
+            gemailcard = "\n📬 Email: "+data["email"]
         if data["whatsapp"] != None:
             wacard = "  \n📱 Whatsapp:"+data["whatsapp"]
-        rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",subtitle=phcard+webcard+emailcard+wacard)
+            gwacard = "\n📬 Email: "+data["email"]
+        rhandler.google_assistant_card(title=params["geo-state"]+" Contacts",formatted_text=phcard+webcard+emailcard+wacard)
+        rhandler.generic_card(title=params["geo-state"]+" Contacts",subtitle=phcard+gwebcard+gemailcard+gwacard)
         rhandler.google_assistant_response("What else?")
     else:
         rhandler.google_assistant_response(speech=grestext)
